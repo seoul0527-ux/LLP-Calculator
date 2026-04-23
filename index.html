@@ -29,11 +29,12 @@
             <div class="btn-group">
                 <button id="add-btn" class="btn-primary">LLP 추가 (+)</button>
                 <button id="del-btn" class="btn-secondary">LLP 삭제 (-)</button>
+                <button id="copy-btn" class="btn-primary" style="background-color: #10b981; border-color: #10b981;">결과 엑셀 복사</button>
             </div>
             <div class="year-selector">
-                <label for="year-select" style="font-weight: 700; color: #1e293b;">연도 선택</label>
+                <label for="year-select" style="font-weight: 700; color: #1e293b;">기준 선택</label>
                 <select id="year-select">
-                    <option value="2025">2025년</option>
+                    <option value="2025-06">2025년 6월</option>
                     <option value="2026">2026년</option>
                 </select>
             </div>
@@ -45,16 +46,16 @@
                 <thead>
                     <tr>
                         <th>파트넘버</th>
-                        <th>Catalogue Price</th>
-                        <th>CSN at Removal</th>
-                        <th>SDC at Removal¹</th>
-                        <th>Factor²</th>
-                        <th>Life Limit³</th>
-                        <th>Ultimate Cycle⁴</th>
-                        <th>Allowance⁵</th>
-                        <th>Credit Note⁶</th>
-                        <th>Handling Fee⁷</th>
-                        <th>청구 비용⁸</th>
+                        <th>Catalogue<br>Price</th>
+                        <th>CSN at<br>Removal</th>
+                        <th>SDC at<br>Removal¹</th>
+                        <th>Operational<br>Factor²</th>
+                        <th>Life<br>Limit³</th>
+                        <th>Ultimate<br>Cycle⁴</th>
+                        <th>Allowance<br>Factor⁵</th>
+                        <th>Credit<br>Note⁶</th>
+                        <th>Handling<br>Fee⁷</th>
+                        <th>청구 비용 ($)⁸</th>
                     </tr>
                 </thead>
                 <tbody id="calc-body">
@@ -95,7 +96,9 @@
                         <thead>
                             <tr>
                                 <th>Part Number</th>
-                                <th style="text-align:right">Price</th>
+                                <th style="text-align:right">Life Limit</th>
+                                <th style="text-align:right">2025년</th>
+                                <th style="text-align:right">2025년 6월</th>
                             </tr>
                         </thead>
                         <tbody id="ref-body-2025"></tbody>
@@ -116,7 +119,9 @@
                         <thead>
                             <tr>
                                 <th>Part Number</th>
-                                <th style="text-align:right">Price</th>
+                                <th style="text-align:right">Life Limit</th>
+                                <th style="text-align:right">2026년</th>
+                                <th style="text-align:right">2026년 6월</th>
                             </tr>
                         </thead>
                         <tbody id="ref-body-2026"></tbody>
