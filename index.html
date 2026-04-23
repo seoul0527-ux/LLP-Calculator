@@ -29,6 +29,9 @@
             <div class="btn-group">
                 <button id="add-btn" class="btn-primary">LLP 추가 (+)</button>
                 <button id="del-btn" class="btn-secondary">LLP 삭제 (-)</button>
+                <button id="ref-2025-btn" class="btn-secondary" style="background-color: #3b82f6; color: white; border: none; padding: 0.4rem 1rem; line-height: 1.2;">2025<br>LLP Price</button>
+                <button id="ref-2026-btn" class="btn-secondary" style="background-color: #0ea5e9; color: white; border: none; padding: 0.4rem 1rem; line-height: 1.2;">2026<br>LLP Price</button>
+                <button id="faq-btn" class="btn-secondary" style="background-color: #6366f1; color: white; border: none;">FAQ / 가이드</button>
                 <button id="copy-btn" class="btn-primary" style="background-color: #10b981; border-color: #10b981;">결과 엑셀 복사</button>
             </div>
             <div class="year-selector">
@@ -76,52 +79,65 @@
             <p>[7]: TCA 계약서에 명시된 상수 값. 매년 escalation 됨</p>
             <p>[8]: Catalogue Price - Credit Note + Handling Fee (당사 지불 금액)</p>
         </div>
-
-        <!-- Reference Tables Section -->
-        <div style="text-align: center; margin-top: 4rem;">
-            <h2 style="font-size: 1.5rem; font-weight: 800; color: #1e293b; margin-bottom: 1.5rem;">LLP Price Reference</h2>
-        </div>
         
-        <div class="reference-section">
-            <!-- 2025 Ref -->
-            <div class="ref-card">
-                <div class="ref-header">
-                    <h2>[ 2025 Prices ]</h2>
-                    <div class="search-box">
-                        <input type="text" id="search-2025" placeholder="파트넘버 검색...">
-                    </div>
+        <!-- Reference tables moved to modals -->
+
+        <!-- Total Sum Bar -->
+        <div class="total-bar">
+            <span class="total-label">TOTAL SUM</span>
+            <span id="total-sum-value" class="total-value">0.00 $</span>
+        </div>
+    </div>
+
+    <!-- 2025 Ref Modal -->
+    <div id="ref-2025-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>2025 LLP Prices</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="search-box" style="margin-bottom: 1.5rem; position: relative;">
+                    <input type="text" id="search-2025" placeholder="파트넘버 검색..." style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 8px; border: 1px solid #cbd5e1;">
                 </div>
-                <div class="ref-table-container">
+                <div class="ref-table-container" style="height: 50vh;">
                     <table class="ref-table">
                         <thead>
                             <tr>
-                                <th>Part Number</th>
-                                <th style="text-align:right">Life Limit</th>
-                                <th style="text-align:right">2025년</th>
-                                <th style="text-align:right">2025년 6월</th>
+                                <th style="position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">Part Number</th>
+                                <th style="position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">Description</th>
+                                <th style="text-align:right; position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">Life Limit</th>
+                                <th style="text-align:right; position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">2025년</th>
+                                <th style="text-align:right; position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">2025년 6월</th>
                             </tr>
                         </thead>
                         <tbody id="ref-body-2025"></tbody>
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- 2026 Ref -->
-            <div class="ref-card">
-                <div class="ref-header">
-                    <h2>[ 2026 Prices ]</h2>
-                    <div class="search-box">
-                        <input type="text" id="search-2026" placeholder="파트넘버 검색...">
-                    </div>
+    <!-- 2026 Ref Modal -->
+    <div id="ref-2026-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>2026 LLP Prices</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="search-box" style="margin-bottom: 1.5rem; position: relative;">
+                    <input type="text" id="search-2026" placeholder="파트넘버 검색..." style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 8px; border: 1px solid #cbd5e1;">
                 </div>
-                <div class="ref-table-container">
+                <div class="ref-table-container" style="height: 50vh;">
                     <table class="ref-table">
                         <thead>
                             <tr>
-                                <th>Part Number</th>
-                                <th style="text-align:right">Life Limit</th>
-                                <th style="text-align:right">2026년</th>
-                                <th style="text-align:right">2026년 6월</th>
+                                <th style="position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">Part Number</th>
+                                <th style="position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">Description</th>
+                                <th style="text-align:right; position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">Life Limit</th>
+                                <th style="text-align:right; position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">2026년</th>
+                                <th style="text-align:right; position: sticky; top: 0; background-color: #ffffff; z-index: 10; box-shadow: 0 2px 0 0 #e2e8f0;">2026년 6월</th>
                             </tr>
                         </thead>
                         <tbody id="ref-body-2026"></tbody>
@@ -129,11 +145,39 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Total Sum Bar -->
-        <div class="total-bar">
-            <span class="total-label">TOTAL SUM</span>
-            <span id="total-sum-value" class="total-value">0.00 $</span>
+    <!-- FAQ Modal -->
+    <div id="faq-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>LLP 계산 가이드 & FAQ</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="faq-item">
+                    <h3>1. Catalogue Price List는 언제부터 적용하나요?</h3>
+                    <p>만약 새로운 Catalogue Price List가 나왔다면 연말에서 45일 전 이후로 Shop Induction이 되면 내년 Catalogue Price가 적용됩니다.<br>
+                    예를 들어서 25년 11월 15일 이전까지 Shop Induction이 되면 25년 가격을 적용, 25년 11월 15일 이후로 Shop induction이 되면 26년 가격이 적용됩니다.<br>
+                    이 것의 근거는 TCA 9 페이지에 나와있습니다.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>2. LLP Invoicing mechanism을 사용할 경우 장탈 당시 누적 싸이클은 FC을 적용하나요 SDC를 적용하나요?</h3>
+                    <p><strong>SDC</strong>를 적용합니다.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>3. Permitted Flight Cycle은 어떤 Life Limit을 기준으로 적용하면 될까요?</h3>
+                    <p>엔진의 Shop Visit Workscope을 보면 사용한 누적싸이클과 remaining cycle이 있습니다. 따라서, 당시 Shop Visit Workscope의 remaining cycle을 기준으로 permitted flight cycle 계산이 가능하고, 해당 싸이클 적용하면 됩니다.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>4. Handling Fee는 어떻게 구하나요?</h3>
+                    <p>Handling Fee는 Product Agreement 에서 명시한 Capped Price(최대 가격)이 있으며, 매년 escalation 되므로 매년 다시 계산해야합니다.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>5. DACs 효율과 Credit 관계</h3>
+                    <p>DACs의 효율이 좋을수록 RR측에서 가져가는 금액이 많아집니다. 즉 당사가 돌려받는 Credit이 줄어듭니다.</p>
+                </div>
+            </div>
         </div>
     </div>
 
