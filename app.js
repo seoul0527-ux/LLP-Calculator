@@ -1,5 +1,5 @@
 const LLP_DATA = {
-    "2025": {
+    "2025-06": {
         "price": {
             "KH14275": 1378125, "KH18436": 2280395, "LV18447": 2280395, "LV19601": 2280395,
             "LV39600": 2280395, "LV39838": 2280395, "KH20818": 64331, "KH59279": 1025640,
@@ -21,9 +21,12 @@ const LLP_DATA = {
             "KH33945": 5000, "KH33944": 5000, "LV35495": 5000, "LV35566": 5000,
             "KH33943": 3000, "KH76711": 3000, "KH34202": 5000, "KH34201": 5000,
             "LV30750": 5000, "KH34200": 4692, "KH13214": 6375, "FW60183": 6375,
-            "KH59799": 6375
+            "KH59799": 6375, "KH23655": 4200, "FW79147": 3000, "KH20922": 3000,
+            "FW80670": 6000, "KH12590": 5750, "KH36323": 3000, "LV34894": 6000,
+            "FW55152": 5000, "KH11698": 5200, "FW89043": 6000, "KH19098": 6000,
+            "KH19775": 9000, "FW34116": 8140
         },
-        "handling_fee": 23610
+        "handling_fee": 24811.01
     },
     "2026": {
         "price": {
@@ -47,13 +50,16 @@ const LLP_DATA = {
             "KH33945": 5000, "KH33944": 5000, "LV35495": 5000, "LV35566": 5000,
             "KH33943": 3000, "KH76711": 3000, "KH34202": 5000, "KH34201": 5000,
             "LV30750": 5000, "KH34200": 4692, "KH13214": 6375, "FW60183": 6375,
-            "KH59799": 6375
+            "KH59799": 6375, "KH23655": 4200, "FW79147": 3000, "KH20922": 3000,
+            "FW80670": 6000, "KH12590": 5750, "KH36323": 3000, "LV34894": 6000,
+            "FW55152": 5000, "KH11698": 5200, "FW89043": 6000, "KH19098": 6000,
+            "KH19775": 9000, "FW34116": 8140
         },
         "handling_fee": 23610
     }
 };
 
-let currentYear = "2025";
+let currentYear = "2025-06";
 let rows = [];
 
 // DOM Elements
@@ -88,13 +94,13 @@ const calculateRow = (row) => {
     // Auto-fill from data
     if (yearData.limit[pNumber]) {
         row.elements.limit.value = formatNum(yearData.limit[pNumber]);
-    } else if (pNumber === "") {
+    } else {
         row.elements.limit.value = "";
     }
     
     if (yearData.price[pNumber]) {
         row.elements.price.value = formatNum(yearData.price[pNumber]);
-    } else if (pNumber === "") {
+    } else {
         row.elements.price.value = "";
     }
     
@@ -185,17 +191,29 @@ const deleteRow = () => {
 };
 
 // Reference Tables
-const updateRefTable = (year, searchStr = "") => {
-    const idx = year === "2025" ? 0 : 1;
+const updateRefTable = (yearGroup, searchStr = "") => {
+    const idx = yearGroup === "2025" ? 0 : 1;
     const tbody = refTableBodies[idx];
-    const prices = LLP_DATA[year].price;
     const query = searchStr.toUpperCase();
+
+    // Use prices from 2025-06 or 2026 to list all part numbers
+    const prices = yearGroup === "2025" ? LLP_DATA["2025-06"].price : LLP_DATA["2026"].price;
+    const limits = yearGroup === "2025" ? LLP_DATA["2025-06"].limit : LLP_DATA["2026"].limit;
 
     tbody.innerHTML = "";
     Object.keys(prices).sort().forEach(p => {
         if (p.includes(query)) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${p}</td><td style="text-align:right">${formatNum(prices[p])} $</td>`;
+            const limitVal = limits[p] ? formatNum(limits[p]) : "-";
+            if (yearGroup === "2025") {
+                const p2025 = "-";
+                const p2025_06 = prices[p] ? formatNum(prices[p]) + " $" : "-";
+                tr.innerHTML = `<td>${p}</td><td style="text-align:right">${limitVal}</td><td style="text-align:right">${p2025}</td><td style="text-align:right">${p2025_06}</td>`;
+            } else {
+                const p2026 = prices[p] ? formatNum(prices[p]) + " $" : "-";
+                const p2026_06 = "-";
+                tr.innerHTML = `<td>${p}</td><td style="text-align:right">${limitVal}</td><td style="text-align:right">${p2026}</td><td style="text-align:right">${p2026_06}</td>`;
+            }
             tbody.appendChild(tr);
         }
     });
@@ -213,9 +231,42 @@ searchInputs.forEach((input, i) => {
     });
 });
 
+// Copy to Clipboard
+const copyToClipboard = () => {
+    let tsv = "파트넘버\tCatalogue Price\tCSN at Removal\tSDC at Removal\tFactor\tLife Limit\tUltimate Cycle\tAllowance\tCredit Note\tHandling Fee\t청구 비용\n";
+    
+    rows.forEach(row => {
+        const r = row.elements;
+        const vals = [
+            r.pNumber.value,
+            r.price.value,
+            r.csn.value,
+            r.sdc.value,
+            r.factor.value,
+            r.limit.value,
+            r.ultimate.value,
+            r.allowance.value,
+            r.credit.value,
+            r.hFee.value,
+            r.total.value
+        ];
+        tsv += vals.join("\t") + "\n";
+    });
+    
+    tsv += `\nTOTAL SUM\t\t\t\t\t\t\t\t\t\t${totalSumValue.innerText}\n`;
+    
+    navigator.clipboard.writeText(tsv).then(() => {
+        alert("계산 결과가 클립보드에 복사되었습니다! 엑셀에 바로 붙여넣기 하세요.");
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert("클립보드 복사에 실패했습니다.");
+    });
+};
+
 // Initialize
 document.getElementById('add-btn').addEventListener('click', addRow);
 document.getElementById('del-btn').addEventListener('click', deleteRow);
+document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
 
 // Initial State
 createRow(); // Create first row
