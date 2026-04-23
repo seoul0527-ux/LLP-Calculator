@@ -59,6 +59,50 @@ const LLP_DATA = {
     }
 };
 
+const LLP_DESCRIPTION = {
+    "FW34116": "LP Compressor Rotor Disc Assembly",
+    "KH59799": "LP Compressor Rotor Disc Assembly",
+    "KH19775": "LP Compressor Balanced Shaft Assembly",
+    "FW60183": "LP Compressor Balanced Shaft Assembly",
+    "LV39838": "IP Compressor Shaft Assembly",
+    "LV39600": "IP Compressor Shaft Assembly",
+    "LV19601": "IP Compressor Shaft Assembly",
+    "LV18447": "IP Compressor Shaft Assembly",
+    "KH18436": "IP Compressor Shaft Assembly",
+    "FW84856": "IP Compressor Rear Stub Shaft Assembly",
+    "KH19517": "HP Compressor Stage 1 to 3 Rotor Discs Shaft",
+    "KH19635": "HP Compressor Stage 4 Disc",
+    "KH20444": "IP Turbine Rotor Disc",
+    "KH62917": "IP Turbine Rotor Disc",
+    "KH51313": "IP Turbine Shaft Assembly",
+    "KH62913": "IP Turbine Shaft Assembly",
+    "KH34200": "LP Turbine Stage 1 Rotor Disc",
+    "FW80670": "LP Turbine Stage 1 Rotor Disc",
+    "LV30750": "LP Turbine Stage 2 Rotor Disc",
+    "KH34201": "LP Turbine Stage 2 Rotor Disc",
+    "KH12590": "LP Turbine Stage 2 Rotor Disc",
+    "KH34202": "LP Turbine Stage 3 Rotor Disc",
+    "KH36323": "LP Turbine Stage 3 Rotor Disc",
+    "LV35566": "LP Turbine Stage 4 Rotor Disc",
+    "LV35495": "LP Turbine Stage 4 Rotor Disc",
+    "KH33943": "LP Turbine Stage 4 Rotor Disc",
+    "KH76711": "LP Turbine Stage 4 Rotor Disc",
+    "KH33944": "LP Turbine Stage 5 Rotor Disc",
+    "KH33945": "LP Turbine Stage 6 Rotor Disc",
+    "KH13214": "LP Turbine Shaft Assembly",
+    "KH20818": "Rotating Seal Arm",
+    "KH19634": "HP Compressor Stage 5 and 6 Discs and Cone Rotor Rear Shaft",
+    "KH14275": "HP Turbine Rotor Disc Assembly",
+    "KH20922": "HP Turbine Rotor Disc Assembly",
+    "KH59279": "HP Turbine Disc Front Cover Plate",
+    "FW79147": "HP Turbine Disc Front Cover Plate",
+    "FW55152": "HP Compressor Stage 4 Disc",
+    "FW89043": "IP Compressor Shaft Assembly",
+    "KH11698": "HPC Stage 1-3 Drum",
+    "KH19098": "IP Rotor Seal (Pack C)",
+    "KH23655": "HP Compressor Stage 5 and 6 Discs and Cone Rotor Rear Shaft"
+};
+
 let currentYear = "2025-06";
 let rows = [];
 
@@ -201,18 +245,30 @@ const updateRefTable = (yearGroup, searchStr = "") => {
     const limits = yearGroup === "2025" ? LLP_DATA["2025-06"].limit : LLP_DATA["2026"].limit;
 
     tbody.innerHTML = "";
-    Object.keys(prices).sort().forEach(p => {
+    
+    // Sort by Description first, then by Part Number
+    Object.keys(prices).sort((a, b) => {
+        const descA = LLP_DESCRIPTION[a] || "ZZZ"; // Unknowns at the end
+        const descB = LLP_DESCRIPTION[b] || "ZZZ";
+        if (descA < descB) return -1;
+        if (descA > descB) return 1;
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }).forEach(p => {
         if (p.includes(query)) {
             const tr = document.createElement('tr');
             const limitVal = limits[p] ? formatNum(limits[p]) : "-";
+            const descVal = LLP_DESCRIPTION[p] || "-";
+            
             if (yearGroup === "2025") {
                 const p2025 = "-";
                 const p2025_06 = prices[p] ? formatNum(prices[p]) + " $" : "-";
-                tr.innerHTML = `<td>${p}</td><td style="text-align:right">${limitVal}</td><td style="text-align:right">${p2025}</td><td style="text-align:right">${p2025_06}</td>`;
+                tr.innerHTML = `<td>${p}</td><td style="font-size: 0.85em; color: #475569;">${descVal}</td><td style="text-align:right">${limitVal}</td><td style="text-align:right">${p2025}</td><td style="text-align:right">${p2025_06}</td>`;
             } else {
                 const p2026 = prices[p] ? formatNum(prices[p]) + " $" : "-";
                 const p2026_06 = "-";
-                tr.innerHTML = `<td>${p}</td><td style="text-align:right">${limitVal}</td><td style="text-align:right">${p2026}</td><td style="text-align:right">${p2026_06}</td>`;
+                tr.innerHTML = `<td>${p}</td><td style="font-size: 0.85em; color: #475569;">${descVal}</td><td style="text-align:right">${limitVal}</td><td style="text-align:right">${p2026}</td><td style="text-align:right">${p2026_06}</td>`;
             }
             tbody.appendChild(tr);
         }
@@ -272,3 +328,36 @@ document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
 createRow(); // Create first row
 updateRefTable("2025");
 updateRefTable("2026");
+
+// Modal Logic
+const setupModal = (btnId, modalId) => {
+    const btn = document.getElementById(btnId);
+    const modal = document.getElementById(modalId);
+    if (!btn || !modal) return;
+    
+    const closeBtn = modal.querySelector(".close-modal");
+    
+    btn.onclick = () => {
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Prevent background scroll
+    };
+
+    const closeModal = () => {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+    };
+
+    if (closeBtn) {
+        closeBtn.onclick = closeModal;
+    }
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+};
+
+setupModal("faq-btn", "faq-modal");
+setupModal("ref-2025-btn", "ref-2025-modal");
+setupModal("ref-2026-btn", "ref-2026-modal");
