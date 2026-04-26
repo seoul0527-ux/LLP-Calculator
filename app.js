@@ -132,23 +132,22 @@ const calculateRow = (row) => {
     const pNumber = row.elements.pNumber.value.trim().toUpperCase();
     const csn = parseNum(row.elements.csn.value);
     const sdc = parseNum(row.elements.sdc.value);
+    const sdcRemain = parseNum(row.elements.sdcRemain.value);
     
     const yearData = LLP_DATA[currentYear];
     
     // Auto-fill from data
-    if (yearData.limit[pNumber]) {
-        row.elements.limit.value = formatNum(yearData.limit[pNumber]);
-    } else {
-        row.elements.limit.value = "";
-    }
-    
     if (yearData.price[pNumber]) {
         row.elements.price.value = formatNum(yearData.price[pNumber]);
     } else {
         row.elements.price.value = "";
     }
-    
-    row.elements.hFee.value = formatNum(yearData.handling_fee);
+
+    if (row.elements.sdcRemain.value.trim() !== "") {
+        row.elements.limit.value = formatNum(sdc + sdcRemain);
+    } else {
+        row.elements.limit.value = "";
+    }
 
     // Calculate fields
     if (sdc !== 0) {
@@ -192,12 +191,13 @@ const createRow = () => {
         { name: 'price', type: 'text', readonly: true },
         { name: 'csn', type: 'text', readonly: false },
         { name: 'sdc', type: 'text', readonly: false },
+        { name: 'sdcRemain', type: 'text', readonly: false },
         { name: 'factor', type: 'text', readonly: true },
         { name: 'limit', type: 'text', readonly: true },
         { name: 'ultimate', type: 'text', readonly: true },
         { name: 'allowance', type: 'text', readonly: true },
         { name: 'credit', type: 'text', readonly: true },
-        { name: 'hFee', type: 'text', readonly: true },
+        { name: 'hFee', type: 'text', readonly: false },
         { name: 'total', type: 'text', readonly: true }
     ];
 
@@ -218,6 +218,7 @@ const createRow = () => {
 
     calcTableBody.appendChild(tr);
     const rowObj = { tr, elements };
+    
     rows.push(rowObj);
     return rowObj;
 };
@@ -278,7 +279,10 @@ const updateRefTable = (yearGroup, searchStr = "") => {
 // Event Listeners
 yearSelect.addEventListener('change', (e) => {
     currentYear = e.target.value;
-    rows.forEach(calculateRow);
+    const yearData = LLP_DATA[currentYear];
+    rows.forEach(row => {
+        calculateRow(row);
+    });
 });
 
 searchInputs.forEach((input, i) => {
@@ -289,7 +293,7 @@ searchInputs.forEach((input, i) => {
 
 // Copy to Clipboard
 const copyToClipboard = () => {
-    let tsv = "파트넘버\tCatalogue Price\tCSN at Removal\tSDC at Removal\tFactor\tLife Limit\tUltimate Cycle\tAllowance\tCredit Note\tHandling Fee\t청구 비용\n";
+    let tsv = "파트넘버\tCatalogue Price\tCSN at Removal\tSDC at Removal\tSDC Remaining\tFactor\tLife Limit\tUltimate Cycle\tAllowance\tCredit Note\tHandling Fee\t청구 비용\n";
     
     rows.forEach(row => {
         const r = row.elements;
@@ -298,6 +302,7 @@ const copyToClipboard = () => {
             r.price.value,
             r.csn.value,
             r.sdc.value,
+            r.sdcRemain.value,
             r.factor.value,
             r.limit.value,
             r.ultimate.value,
