@@ -48,17 +48,18 @@
             <table>
                 <thead>
                     <tr>
-                        <th>파트넘버</th>
+                        <th>파트넘버<span style="color:red">*</span></th>
                         <th>Catalogue<br>Price</th>
-                        <th>CSN at<br>Removal</th>
-                        <th>SDC at<br>Removal¹</th>
-                        <th>Operational<br>Factor²</th>
-                        <th>Life<br>Limit³</th>
-                        <th>Ultimate<br>Cycle⁴</th>
-                        <th>Allowance<br>Factor⁵</th>
-                        <th>Credit<br>Note⁶</th>
-                        <th>Handling<br>Fee⁷</th>
-                        <th>청구 비용 ($)⁸</th>
+                        <th>CSN at<br>Removal<span style="color:red">*</span></th>
+                        <th>SDC at<br>Removal¹<span style="color:red">*</span></th>
+                        <th>SDC<br>Remaining²<span style="color:red">*</span></th>
+                        <th>Operational<br>Factor³</th>
+                        <th>Life<br>Limit⁴</th>
+                        <th>Ultimate<br>Cycle⁵</th>
+                        <th>Allowance<br>Factor⁶</th>
+                        <th>Credit<br>Note⁷</th>
+                        <th>Handling<br>Fee⁸<span style="color:red">*</span></th>
+                        <th>청구 비용 ($)⁹</th>
                     </tr>
                 </thead>
                 <tbody id="calc-body">
@@ -71,13 +72,14 @@
         <div class="notes">
             <h3>Calculations & Notes</h3>
             <p>[1]: 장탈 당시 DAC 싸이클</p>
-            <p>[2]: CSN at Removal / SDC at Removal</p>
-            <p>[3]: TLM에 명시된 Life Limit</p>
-            <p>[4]: Permitted Flight Cycle × Operational Factor</p>
-            <p>[5]: ((15,000 - Ultimate Flight Cycle) / 15,000))</p>
-            <p>[6]: Catalogue Price × Allowance Factor</p>
-            <p>[7]: TCA 계약서에 명시된 상수 값. 매년 escalation 됨</p>
-            <p>[8]: Catalogue Price - Credit Note + Handling Fee (당사 지불 금액)</p>
+            <p>[2]: Shop Workscope에 표시된 SDC Remaining 값</p>
+            <p>[3]: CSN at Removal / SDC at Removal</p>
+            <p>[4]: SDC at Removal + SDC Remaining</p>
+            <p>[5]: Permitted Flight Cycle × Operational Factor</p>
+            <p>[6]: ((15,000 - Ultimate Flight Cycle) / 15,000))</p>
+            <p>[7]: Catalogue Price × Allowance Factor</p>
+            <p>[8]: TCA 계약서에 명시된 상수 값. 매년 escalation 됨</p>
+            <p>[9]: Catalogue Price - Credit Note + Handling Fee (당사 지불 금액)</p>
         </div>
         
         <!-- Reference tables moved to modals -->
