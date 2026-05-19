@@ -236,6 +236,24 @@ const deleteRow = () => {
 };
 
 // Reference Tables
+const PASTEL_COLORS = [
+    "#fecaca", "#fde68a", "#bbf7d0", "#bfdbfe", "#e9d5ff",
+    "#fbcfe8", "#fed7aa", "#d9f99d", "#99f6e4", "#c7d2fe",
+    "#fecdd3", "#fef08a", "#a7f3d0", "#bae6fd", "#ddd6fe",
+    "#f9a8d4", "#fcd34d", "#86efac", "#7dd3fc", "#c4b5fd",
+    "#fda4af"
+];
+
+const getDescriptionColor = (desc) => {
+    if (!desc || desc === "-" || desc === "ZZZ") return "";
+    let hash = 0;
+    for (let i = 0; i < desc.length; i++) {
+        hash = desc.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % PASTEL_COLORS.length;
+    return PASTEL_COLORS[index];
+};
+
 const updateRefTable = (yearGroup, searchStr = "") => {
     const idx = yearGroup === "2025" ? 0 : 1;
     const tbody = refTableBodies[idx];
@@ -261,6 +279,11 @@ const updateRefTable = (yearGroup, searchStr = "") => {
             const tr = document.createElement('tr');
             const limitVal = limits[p] ? formatNum(limits[p]) : "-";
             const descVal = LLP_DESCRIPTION[p] || "-";
+            
+            const bgColor = getDescriptionColor(descVal);
+            if (bgColor) {
+                tr.style.backgroundColor = bgColor;
+            }
             
             if (yearGroup === "2025") {
                 const p2025 = "-";
