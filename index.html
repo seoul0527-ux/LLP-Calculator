@@ -17,77 +17,143 @@
             <div class="logo-container">
                 <img src="logo.png" alt="Air Premia Logo" class="main-logo">
                 <div style="width: 2px; height: 30px; background: #e2e8f0;"></div>
-                <span style="font-weight: 600; color: #475569;">LLP Credit Calculator</span>
+                <span style="font-weight: 600; color: #475569;">LLP Calculator</span>
             </div>
-            <div class="guide-text">
-                [Made by 엔진관리파트] ESN 11448, 11421, 11417, 11422, 11442, 11431 엔진 제외 모든 엔진 계산에 적용
-            </div>
-        </header>
-
-        <!-- Controls -->
-        <div class="controls-bar">
-            <div class="btn-group">
-                <button id="add-btn" class="btn-primary">LLP 추가 (+)</button>
-                <button id="del-btn" class="btn-secondary">LLP 삭제 (-)</button>
+            <div class="header-buttons">
                 <button id="ref-2025-btn" class="btn-secondary" style="background-color: #3b82f6; color: white; border: none; padding: 0.4rem 1rem; line-height: 1.2;">2025<br>LLP Price</button>
                 <button id="ref-2026-btn" class="btn-secondary" style="background-color: #0ea5e9; color: white; border: none; padding: 0.4rem 1rem; line-height: 1.2;">2026<br>LLP Price</button>
                 <button id="faq-btn" class="btn-secondary" style="background-color: #6366f1; color: white; border: none;">FAQ / 가이드</button>
-                <button id="copy-btn" class="btn-primary" style="background-color: #10b981; border-color: #10b981;">결과 엑셀 복사</button>
             </div>
-            <div class="year-selector">
-                <label for="year-select" style="font-weight: 700; color: #1e293b;">기준 선택</label>
-                <select id="year-select">
-                    <option value="2025-06">2025년 6월</option>
-                    <option value="2026">2026년</option>
-                </select>
+        </header>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+            <button id="tab-calc1" class="tab-btn active" onclick="switchCalculator(1)">
+                <span class="tab-icon">📊</span>
+                <span class="tab-text">계산기 1<br><small>ESN 11448, 11421, 11417, 11422, 11442, 11431 엔진 제외 모든 엔진에 적용</small></span>
+            </button>
+            <button id="tab-calc2" class="tab-btn" onclick="switchCalculator(2)">
+                <span class="tab-icon">💰</span>
+                <span class="tab-text">계산기 2<br><small>ESN 11448, 11421, 11417, 11422, 11442, 11431 엔진 적용</small></span>
+            </button>
+        </div>
+
+        <!-- ===================== CALCULATOR 1 ===================== -->
+        <div id="calculator-1" class="calculator-panel active">
+            <!-- Controls -->
+            <div class="controls-bar">
+                <div class="btn-group">
+                    <button id="add-btn" class="btn-primary">LLP 추가 (+)</button>
+                    <button id="del-btn" class="btn-secondary">LLP 삭제 (-)</button>
+                    <button id="copy-btn" class="btn-primary" style="background-color: #10b981; border-color: #10b981;">결과 엑셀 복사</button>
+                </div>
+                <div class="year-selector">
+                    <label for="year-select" style="font-weight: 700; color: #1e293b;">기준 선택</label>
+                    <select id="year-select">
+                        <option value="2025-06">2025년 6월</option>
+                        <option value="2026">2026년</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Main Calculator -->
+            <div class="calc-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>파트넘버<span style="color:red">*</span></th>
+                            <th>Catalogue<br>Price</th>
+                            <th>CSN at<br>Removal<span style="color:red">*</span></th>
+                            <th>SDC at<br>Removal¹<span style="color:red">*</span></th>
+                            <th>SDC<br>Remaining²<span style="color:red">*</span></th>
+                            <th>Operational<br>Factor³</th>
+                            <th>Life<br>Limit⁴</th>
+                            <th>Ultimate<br>Cycle⁵</th>
+                            <th>Allowance<br>Factor⁶</th>
+                            <th>Credit<br>Note⁷</th>
+                            <th>Handling<br>Fee⁸<span style="color:red">*</span></th>
+                            <th>청구 비용 ($)⁹</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calc-body">
+                        <!-- Rows will be added by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="notes">
+                <h3>Calculations & Notes</h3>
+                <p>[1]: 장탈 당시 DAC 싸이클</p>
+                <p>[2]: Shop Workscope에 표시된 SDC Remaining 값</p>
+                <p>[3]: CSN at Removal / SDC at Removal</p>
+                <p>[4]: SDC at Removal + SDC Remaining</p>
+                <p>[5]: Permitted Flight Cycle × Operational Factor</p>
+                <p>[6]: ((15,000 - Ultimate Flight Cycle) / 15,000))</p>
+                <p>[7]: Catalogue Price × Allowance Factor</p>
+                <p>[8]: TCA 계약서에 명시된 상수 값. 매년 escalation 됨</p>
+                <p>[9]: Catalogue Price - Credit Note + Handling Fee (당사 지불 금액)</p>
+            </div>
+
+            <!-- Total Sum Bar -->
+            <div class="total-bar">
+                <span class="total-label">TOTAL SUM</span>
+                <span id="total-sum-value" class="total-value">0.00 $</span>
             </div>
         </div>
 
-        <!-- Main Calculator -->
-        <div class="calc-card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>파트넘버<span style="color:red">*</span></th>
-                        <th>Catalogue<br>Price</th>
-                        <th>CSN at<br>Removal<span style="color:red">*</span></th>
-                        <th>SDC at<br>Removal¹<span style="color:red">*</span></th>
-                        <th>SDC<br>Remaining²<span style="color:red">*</span></th>
-                        <th>Operational<br>Factor³</th>
-                        <th>Life<br>Limit⁴</th>
-                        <th>Ultimate<br>Cycle⁵</th>
-                        <th>Allowance<br>Factor⁶</th>
-                        <th>Credit<br>Note⁷</th>
-                        <th>Handling<br>Fee⁸<span style="color:red">*</span></th>
-                        <th>청구 비용 ($)⁹</th>
-                    </tr>
-                </thead>
-                <tbody id="calc-body">
-                    <!-- Rows will be added by JS -->
-                </tbody>
-            </table>
-        </div>
+        <!-- ===================== CALCULATOR 2 ===================== -->
+        <div id="calculator-2" class="calculator-panel">
+            <!-- Controls -->
+            <div class="controls-bar">
+                <div class="btn-group">
+                    <button id="add-btn-c2" class="btn-primary">LLP 추가 (+)</button>
+                    <button id="del-btn-c2" class="btn-secondary">LLP 삭제 (-)</button>
+                    <button id="copy-btn-c2" class="btn-primary" style="background-color: #10b981; border-color: #10b981;">결과 엑셀 복사</button>
+                </div>
+                <div class="year-selector">
+                    <label for="year-select-c2" style="font-weight: 700; color: #1e293b;">기준 선택</label>
+                    <select id="year-select-c2">
+                        <option value="2025-06">2025년 6월</option>
+                        <option value="2026">2026년</option>
+                    </select>
+                </div>
+            </div>
 
-        <!-- Notes Section -->
-        <div class="notes">
-            <h3>Calculations & Notes</h3>
-            <p>[1]: 장탈 당시 DAC 싸이클</p>
-            <p>[2]: Shop Workscope에 표시된 SDC Remaining 값</p>
-            <p>[3]: CSN at Removal / SDC at Removal</p>
-            <p>[4]: SDC at Removal + SDC Remaining</p>
-            <p>[5]: Permitted Flight Cycle × Operational Factor</p>
-            <p>[6]: ((15,000 - Ultimate Flight Cycle) / 15,000))</p>
-            <p>[7]: Catalogue Price × Allowance Factor</p>
-            <p>[8]: TCA 계약서에 명시된 상수 값. 매년 escalation 됨</p>
-            <p>[9]: Catalogue Price - Credit Note + Handling Fee (당사 지불 금액)</p>
-        </div>
-        
-        <!-- Reference tables moved to modals -->
+            <!-- Calculator 2 Table -->
+            <div class="calc-card">
+                <table id="calc2-table">
+                    <thead>
+                        <tr>
+                            <th>파트넘버<span style="color:red">*</span></th>
+                            <th>Description</th>
+                            <th>Catalogue Price $<br>G</th>
+                            <th>Consumed Life at Engine Removal<br>L <span style="color:red">*</span></th>
+                            <th>Stub Life Factor<br>F</th>
+                            <th>Net Price ($) Invoice 청구 금액<br>= G X (L / 15,000) X F</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calc2-body">
+                        <!-- Rows will be added by JS -->
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Total Sum Bar -->
-        <div class="total-bar">
-            <span class="total-label">TOTAL SUM</span>
-            <span id="total-sum-value" class="total-value">0.00 $</span>
+            <!-- Notes Section -->
+            <div class="notes">
+                <h3>Calculations & Notes</h3>
+                <p><strong>계산 공식:</strong> Net Price = Catalogue Price (G) × (Consumed Life (L) / 15,000) × Stub Life Factor (F)</p>
+                <p><strong>G (Catalogue Price):</strong> 해당 연도의 LLP Catalogue Price</p>
+                <p><strong>L (Consumed Life):</strong> LLP 장탈 당시 싸이클 (SDC Cycle 적용)</p>
+                <p><strong>F (Stub Life Factor):</strong> 1.225 (상수)</p>
+                <p><strong>적용 엔진:</strong> ESN 11448, 11421, 11417, 11422, 11442, 11431</p>
+            </div>
+
+            <!-- Total Sum Bar -->
+            <div class="total-bar">
+                <span class="total-label">TOTAL</span>
+                <span id="total-sum-value-c2" class="total-value">0.00 $</span>
+            </div>
         </div>
     </div>
 
