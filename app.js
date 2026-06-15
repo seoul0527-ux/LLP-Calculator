@@ -389,3 +389,145 @@ const setupModal = (btnId, modalId) => {
 setupModal("faq-btn", "faq-modal");
 setupModal("ref-2025-btn", "ref-2025-modal");
 setupModal("ref-2026-btn", "ref-2026-modal");
+
+// ===================== TAB SWITCHING =====================
+function switchCalculator(num) {
+    document.getElementById('calculator-1').classList.remove('active');
+    document.getElementById('calculator-2').classList.remove('active');
+    document.getElementById('tab-calc1').classList.remove('active');
+    document.getElementById('tab-calc2').classList.remove('active');
+
+    document.getElementById(`calculator-${num}`).classList.add('active');
+    document.getElementById(`tab-calc${num}`).classList.add('active');
+}
+
+// ===================== CALCULATOR 2 LOGIC =====================
+const STUB_LIFE_FACTOR = 1.225;
+let currentYearC2 = "2025-06";
+let c2Rows = [];
+
+const calc2Body = document.getElementById('calc2-body');
+const yearSelectC2 = document.getElementById('year-select-c2');
+const totalSumValueC2 = document.getElementById('total-sum-value-c2');
+
+const calculateC2Row = (rowObj) => {
+    const yearData = LLP_DATA[currentYearC2];
+    const pn = rowObj.elements.pNumber.value.trim().toUpperCase();
+    const price = yearData.price[pn] || 0;
+
+    // Auto-fill catalogue price
+    rowObj.elements.price.value = price ? formatNum(price) : "";
+
+    // Auto-fill description
+    rowObj.elements.desc.value = LLP_DESCRIPTION[pn] || "";
+
+    const life = parseNum(rowObj.elements.life.value);
+
+    let netPrice = 0;
+    if (price && life > 0) {
+        netPrice = price * (life / 15000) * STUB_LIFE_FACTOR;
+    }
+    rowObj.elements.result.value = netPrice > 0 ? formatNum(netPrice, 2) : "0.00";
+    updateC2Total();
+};
+
+const updateC2Total = () => {
+    let sum = 0;
+    c2Rows.forEach(r => {
+        sum += parseNum(r.elements.result.value);
+    });
+    totalSumValueC2.textContent = formatNum(sum, 2) + " $";
+};
+
+const createC2Row = () => {
+    const tr = document.createElement('tr');
+    const fields = [
+        { name: 'pNumber', type: 'text', readonly: false },
+        { name: 'desc', type: 'text', readonly: true },
+        { name: 'price', type: 'text', readonly: true },
+        { name: 'life', type: 'text', readonly: false },
+        { name: 'factor', type: 'text', readonly: true },
+        { name: 'result', type: 'text', readonly: true }
+    ];
+
+    const elements = {};
+    fields.forEach(f => {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = `input-field ${f.readonly ? 'readonly-field' : ''}`;
+        if (f.readonly) input.readOnly = true;
+
+        // Set default for factor
+        if (f.name === 'factor') {
+            input.value = STUB_LIFE_FACTOR.toFixed(3);
+        }
+
+        input.addEventListener('input', () => calculateC2Row({ elements }));
+
+        td.appendChild(input);
+        tr.appendChild(td);
+        elements[f.name] = input;
+    });
+
+    calc2Body.appendChild(tr);
+    const rowObj = { tr, elements };
+    c2Rows.push(rowObj);
+    return rowObj;
+};
+
+const addC2Row = () => {
+    if (c2Rows.length < 25) createC2Row();
+};
+
+const deleteC2Row = () => {
+    if (c2Rows.length > 1) {
+        const row = c2Rows.pop();
+        row.tr.remove();
+        updateC2Total();
+    }
+};
+
+// Year change for Calculator 2
+yearSelectC2.addEventListener('change', (e) => {
+    currentYearC2 = e.target.value;
+    c2Rows.forEach(row => calculateC2Row(row));
+});
+
+// Copy to Clipboard for Calculator 2
+const copyToClipboardC2 = () => {
+    let tsv = "파트넘버\tDescription\tCatalogue Price ($)\tConsumed Life (L)\tStub Life Factor (F)\tNet Price ($)\n";
+
+    c2Rows.forEach(row => {
+        const r = row.elements;
+        const vals = [
+            r.pNumber.value,
+            r.desc.value,
+            r.price.value,
+            r.life.value || "0",
+            r.factor.value,
+            r.result.value
+        ];
+        tsv += vals.join("\t") + "\n";
+    });
+
+    let sum = 0;
+    c2Rows.forEach(r => {
+        sum += parseNum(r.elements.result.value);
+    });
+    tsv += `\nTOTAL\t\t\t\t\t${formatNum(sum, 2)} $\n`;
+
+    navigator.clipboard.writeText(tsv).then(() => {
+        alert("계산기 2 결과가 클립보드에 복사되었습니다! 엑셀에 바로 붙여넣기 하세요.");
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert("클립보드 복사에 실패했습니다.");
+    });
+};
+
+document.getElementById('add-btn-c2').addEventListener('click', addC2Row);
+document.getElementById('del-btn-c2').addEventListener('click', deleteC2Row);
+document.getElementById('copy-btn-c2').addEventListener('click', copyToClipboardC2);
+
+// Initialize Calculator 2 with one row
+createC2Row();
