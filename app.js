@@ -110,6 +110,8 @@ let rows = [];
 const calcTableBody = document.getElementById('calc-body');
 const yearSelect = document.getElementById('year-select');
 const totalSumValue = document.getElementById('total-sum-value');
+const totalPriceValue = document.getElementById('total-price-value');
+const totalCreditValue = document.getElementById('total-credit-value');
 const searchInputs = [document.getElementById('search-2025'), document.getElementById('search-2026')];
 const refTableBodies = [document.getElementById('ref-body-2025'), document.getElementById('ref-body-2026')];
 
@@ -177,10 +179,16 @@ const calculateRow = (row) => {
 
 const updateTotalSum = () => {
     let sum = 0;
+    let priceSum = 0;
+    let creditSum = 0;
     rows.forEach(row => {
         sum += parseNum(row.elements.total.value);
+        priceSum += parseNum(row.elements.price.value);
+        creditSum += parseNum(row.elements.credit.value);
     });
     totalSumValue.innerText = formatNum(sum, 2) + " $";
+    totalPriceValue.innerText = formatNum(priceSum, 2) + " $";
+    totalCreditValue.innerText = formatNum(creditSum, 2) + " $";
 };
 
 // UI Row Management
@@ -409,6 +417,7 @@ let c2Rows = [];
 const calc2Body = document.getElementById('calc2-body');
 const yearSelectC2 = document.getElementById('year-select-c2');
 const totalSumValueC2 = document.getElementById('total-sum-value-c2');
+const totalPriceValueC2 = document.getElementById('total-price-value-c2');
 
 const calculateC2Row = (rowObj) => {
     const yearData = LLP_DATA[currentYearC2];
@@ -433,10 +442,13 @@ const calculateC2Row = (rowObj) => {
 
 const updateC2Total = () => {
     let sum = 0;
+    let priceSum = 0;
     c2Rows.forEach(r => {
         sum += parseNum(r.elements.result.value);
+        priceSum += parseNum(r.elements.price.value);
     });
     totalSumValueC2.textContent = formatNum(sum, 2) + " $";
+    totalPriceValueC2.textContent = formatNum(priceSum, 2) + " $";
 };
 
 const createC2Row = () => {
